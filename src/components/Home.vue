@@ -30,38 +30,42 @@
           >
             <el-submenu index="1">
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span slot="title">导航一</span>
+                <i class="el-icon-user"></i>
+                <span slot="title">学生管理</span>
               </template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-              <el-menu-item index="1-3">选项3</el-menu-item>
+              <el-menu-item index="/studentlist">学员列表</el-menu-item>
             </el-submenu>
 
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
-              </template>
-              <el-menu-item index="2-1">选项1</el-menu-item>
-              <el-menu-item index="2-2">选项2</el-menu-item>
-              <el-menu-item index="2-3">选项3</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="/school">
+              <i class="el-icon-folder-opened"></i>
+              <span slot="title">学籍管理</span>
+            </el-menu-item>
 
             <el-submenu index="3">
               <template slot="title">
-                <i class="el-icon-document"></i>
-                <span slot="title">导航三</span>
+                <i class="el-icon-finished"></i>
+                <span slot="title">成绩管理</span>
               </template>
-              <el-menu-item index="3-1">选项1</el-menu-item>
-              <el-menu-item index="3-2">选项2</el-menu-item>
-              <el-menu-item index="3-3">选项3</el-menu-item>
+              <el-menu-item index="/grades">成绩列表</el-menu-item>
             </el-submenu>
 
-            <el-menu-item index="4">
-              <i class="el-icon-setting"></i>
-              <span slot="title">导航四</span>
-            </el-menu-item>
+             <el-submenu index="4">
+              <template slot="title">
+                <i class="el-icon-data-line"></i>
+                <span slot="title">数据统计</span>
+              </template>
+              <el-menu-item index="/facultydata">院系数据</el-menu-item>
+              <el-menu-item index="/classdata">班级数据</el-menu-item>
+            </el-submenu>
+
+            <el-submenu index="5">
+              <template slot="title">
+                <i class="el-icon-setting"></i>
+                <span slot="title">系统设置</span>
+              </template>
+              <el-menu-item index="/edit">修改账号信息</el-menu-item>
+              <el-menu-item index="/about">关于</el-menu-item>
+            </el-submenu>
           </el-menu>
         </el-aside>
 
@@ -117,13 +121,11 @@ export default {
   font-size: 20px;
   background-color: #606266;
 
-
-  .el-button{
-      padding-left: 5px;
-      padding-right: 5px;
-    .overicon{
-        margin-right: 8px;
-  
+  .el-button {
+    padding-left: 5px;
+    padding-right: 5px;
+    .overicon {
+      margin-right: 8px;
     }
   }
 
