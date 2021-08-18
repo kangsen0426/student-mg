@@ -35,6 +35,7 @@
       <!-- 用户列表区域 -->
       <el-table :data="studentlist" border stripe>
         <el-table-column type="index"></el-table-column>
+        <el-table-column prop="stu_code" label="学号"></el-table-column>
         <el-table-column prop="stu_name" label="姓名"></el-table-column>
         <el-table-column prop="stu_class" label="班级"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
@@ -89,6 +90,9 @@
       >
         <el-form-item label="姓名" prop="stuname">
           <el-input v-model="addForm.stuname"></el-input>
+        </el-form-item>
+         <el-form-item label="学号">
+          <el-input v-model="addForm.stucode"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="stuclass">
           <el-input v-model="addForm.stuclass"></el-input>
@@ -187,6 +191,7 @@ export default {
           mobile: "18296701966", //电话
           stu_class: "软件2007", //班级
           stu_name: "康森", //学员姓名
+          stu_code: "6020202023", //学员姓名
         },
         {
           create_time: 1486720211,
@@ -195,6 +200,7 @@ export default {
           mobile: "18564255158",
           stu_class: "软件2007",
           stu_name: "小王",
+           stu_code: "6020202024"
         },
       ],
 
@@ -212,6 +218,7 @@ export default {
       addForm: {
         stuname: "",
         stuclass: "",
+        stucode:"",
         email: "",
         mobile: "",
       },
@@ -273,7 +280,7 @@ export default {
       //根据id 删除学生
             //删除用户
       //先提示询问
-      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该学员信息, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -287,7 +294,7 @@ export default {
 
             console.log(res);
 
-          this.$message.success("删除用户成功!");
+          this.$message.success("删除学员信息成功!");
 
 
           })

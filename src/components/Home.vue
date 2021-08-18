@@ -161,4 +161,7 @@ export default {
     border-right: none;
   }
 }
+.el-container {
+  overflow: hidden;
+}
 </style>
