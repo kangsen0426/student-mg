@@ -83,11 +83,12 @@ export default {
 
         this.$router.push("/home");
 
-        return this.$message.success("登入成功！");
+       return this.$message.success("登入成功！");
 
         //登入请求
         LoginRequest(this.LoginForm).then((res) => {
           // Code
+          console.log(res);
         });
       });
     },
