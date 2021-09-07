@@ -5,42 +5,44 @@ import request from "../utils/request";
 export const getStuList = (params) => {
     return request({
         method: 'GET',
-        url: '',
+        url: '/student',
         params
     })
 }
 
 //添加学员请求
-export const addStu = (data) => {
+export const addStu = (params) => {
     return request({
         method: 'POST',
-        url: '',
-        data
+        url: '/student',
+        params
     })
 }
 
 //编辑学员请求
-export const editStu = (data) => {
+export const editStu = (params) => {
     return request({
-        method: 'PUT',
-        url: '',
-        data
+        method: 'POST',
+        url: '/student',
+        params
     })
 }
 
 //删除学员请求
-export const removeStu = (stuID) => {
+export const removeStu = (params) => {
     return request({
-        method: 'DELETE',
-        url: `url/${stuID}`
+        method: 'POST',
+        url: `/student`,
+        params
     })
 }
 
 //获取学员成绩列表请求
-export const getStuGrades = () => {
+export const getStuGrades = (params) => {
     return request({
         method: 'GET',
-        url: '',
+        url: '/student',
+        params
     })
 }
 

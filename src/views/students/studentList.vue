@@ -26,20 +26,18 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addDialogVisible = true"
-            >添加学员</el-button
-          >
+          <el-button type="primary" @click="addDialogClick">添加学员</el-button>
         </el-col>
       </el-row>
 
       <!-- 用户列表区域 -->
       <el-table :data="studentlist" border stripe>
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="stu_code" label="学号"></el-table-column>
+        <el-table-column prop="stu_id" label="学号"></el-table-column>
         <el-table-column prop="stu_name" label="姓名"></el-table-column>
-        <el-table-column prop="stu_class" label="班级"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
-        <el-table-column prop="mobile" label="电话"></el-table-column>
+        <el-table-column prop="stu_classNo" label="班级"></el-table-column>
+        <el-table-column prop="stu_email" label="邮箱"></el-table-column>
+        <el-table-column prop="stu_phone" label="电话"></el-table-column>
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
             <!-- 修改按钮 -->
@@ -54,7 +52,7 @@
               type="danger"
               icon="el-icon-delete"
               size="mini"
-              @click="removeStuById(scope.row.id)"
+              @click="removeStuById(scope.row.stu_id)"
             ></el-button>
           </template>
         </el-table-column>
@@ -91,7 +89,7 @@
         <el-form-item label="姓名" prop="stuname">
           <el-input v-model="addForm.stuname"></el-input>
         </el-form-item>
-         <el-form-item label="学号">
+        <el-form-item label="学号">
           <el-input v-model="addForm.stucode"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="stuclass">
@@ -144,14 +142,14 @@
       <!-- 底部区域 -->
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editStu">确 定</el-button>
+        <el-button type="primary" @click="editStuClick">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getStuList, addStu, editStu ,removeStu} from "@/api/student";
+import { getStuList, addStu, editStu, removeStu } from "@/api/student";
 
 export default {
   name: "studentList",
@@ -183,31 +181,16 @@ export default {
 
     return {
       //学员列表
-      studentlist: [
-        {
-          create_time: 1486720211, //用户添加 / 创建的时间
-          email: "2983973848@qq.com", //邮箱
-          id: 500, //唯一id
-          mobile: "18296701966", //电话
-          stu_class: "软件2007", //班级
-          stu_name: "康森", //学员姓名
-          stu_code: "6020202023", //学员姓名
-        },
-        {
-          create_time: 1486720211,
-          email: "2983973848@qq.com",
-          id: 501,
-          mobile: "18564255158",
-          stu_class: "软件2007",
-          stu_name: "小王",
-           stu_code: "6020202024"
-        },
-      ],
+      studentlist: [],
+
+      //编辑学员临时的信息
+      tempInfo: {},
 
       queryInfo: {
         query: "", //查询的参数
         pagenum: 1, //页码数量
         pagesize: 2, //一页有几条
+        method: "getAll",
       },
       total: 0, //总共有几条数据
 
@@ -218,7 +201,7 @@ export default {
       addForm: {
         stuname: "",
         stuclass: "",
-        stucode:"",
+        stucode: "",
         email: "",
         mobile: "",
       },
@@ -238,12 +221,12 @@ export default {
         ],
         stuclass: [
           { required: true, message: "请输入班级", trigger: "blur" },
-          {
-            min: 1,
-            max: 10,
-            message: "班级的长度在 1 到 10 个字符",
-            trigger: "blur",
-          },
+          // {
+          //   min: 1,
+          //   max: 10,
+          //   message: "班级的长度在 1 到 10 个字符",
+          //   trigger: "blur",
+          // },
         ],
         email: [
           { required: true, message: "请输入邮箱", trigger: "blur" },
@@ -268,17 +251,21 @@ export default {
   methods: {
     async getStuList() {
       //发送请求获取学员列表数据
-      const res = await getStuList({ params: this.queryInfo });
-
-      //  console.log(res);
+      const res = await getStuList(this.queryInfo);
 
       //判断状态码
-
-      //读取数据
+      if (res.data.meta.status === 200) {
+        this.$message.success("获取学生列表成功！");
+        //读取数据
+        console.log(res.data.data.Info);
+        this.studentlist = res.data.data.Info;
+      } else {
+        this.$message.error("获取学生列表失败！");
+      }
     },
     removeStuById(id) {
       //根据id 删除学生
-            //删除用户
+      //删除用户
       //先提示询问
       this.$confirm("此操作将永久删除该学员信息, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -286,19 +273,20 @@ export default {
         type: "warning",
       })
         .then(() => {
-          
           console.log(id);
-          removeStu(id).then(res =>{
 
+          let params = {
+            method: "delete",
+            id: id,
+          };
 
-
+          removeStu(params).then((res) => {
             console.log(res);
 
-          this.$message.success("删除学员信息成功!");
+            this.getStuList();
 
-
-          })
-
+            this.$message.success("删除学员信息成功!");
+          });
         })
         .catch(() => {
           this.$message({
@@ -311,10 +299,19 @@ export default {
       this.editDialogVisible = true;
       //展示学员信息
       this.addForm.stuname = row.stu_name;
-      this.addForm.stuclass = row.stu_class;
-      this.addForm.email = row.email;
-      this.addForm.mobile = row.mobile;
-      this.editStuID = row.id;
+      this.addForm.stuclass = row.stu_classNo;
+      this.addForm.email = row.stu_email;
+      this.addForm.mobile = row.stu_phone;
+      this.editStuID = row.stu_id;
+
+      this.tempInfo = row;
+    },
+    addDialogClick() {
+      this.addDialogVisible = true;
+
+      setTimeout(() => {
+        this.$refs.addFormRef.resetFields();
+      }, 200);
     },
     handleSizeChange(newSize) {
       //监听pagesize改变事件  改变一页有几条
@@ -334,54 +331,92 @@ export default {
       this.$refs.addFormRef.validate((valid) => {
         if (!valid) return;
         //无错误发起网络请求
-        addStu(this.addForm).then((res) => {
+
+        let params = {
+          method:'add',
+          stu_phone: this.addForm.mobile,
+          stu_classNo: this.addForm.stuclass,
+          stu_gender: 1,
+          stu_age: 20,
+          stu_address: "test",
+          stu_birth: new Date,
+          stu_gradeId: 8,
+          stu_email: this.addForm.email,
+          // stu_id: this.addForm.stucode,
+          stu_name: this.addForm.stuname,
+        };
+
+
+        addStu(params).then((res) => {
+
+          console.log(res);
+          
           // if(){
           // }else{
           // }
 
           //隐藏对话框
           this.addDialogVisible = false;
+          console.log('ok');
           //更新用户列表
           this.getStuList();
-          return this.$message.success("添加学员成功！");
+          this.$message.success("添加学员成功！");
+
+
+
         });
       });
+
+      this.$refs.addFormRef.resetFields();
     },
     addDialogClose() {
       //添加学员对话框关闭
       this.$refs.addFormRef.resetFields();
     },
-    editStu() {
+    editStuClick() {
       //验证数据发送请求
       this.$refs.editFormRef.validate((valid) => {
-        if (!valid) return;
+        if (!valid) {
+          alert("表单验证出错！");
+        }
+
         //无错误发起网络请求
-        editStu({
-          id: this.editStuID,
-          email: this.addForm.email,
-          mobile: this.addForm.mobile,
-          stu_class: this.addForm.stu_class,
-          stu_name: this.stu_name,
-        }).then(res =>{
+        let stuData = {
+          method: "update",
+          stu_id: this.editStuID,
+          stu_email: this.addForm.email,
+          stu_phone: this.addForm.mobile,
+          stu_classNo: this.addForm.stuclass,
+          stu_name: this.addForm.stuname,
+          stu_address: this.tempInfo.stu_address,
+          stu_gender: this.tempInfo.stu_gender,
+          stu_age: this.tempInfo.stu_age,
+          stu_gradeId: this.tempInfo.stu_gradeId,
+        };
+
+        console.log(stuData);
+
+        editStu(stuData).then((res) => {
           console.log(res);
 
-
-
+          if (res.data.meta.status == 200) {
+            this.$message.success("编辑学员成功！");
+          } else {
+            this.$message.error("编辑学员失败！");
+          }
 
           //更新学员列表
           this.getStuList();
-          this.$message.success("编辑学员成功！");
-
-        })
+        });
       });
 
-
-      this.editDialogVisible = false
+      this.editDialogVisible = false;
     },
     editDialogClose() {
       //编辑学员对话框关闭
+
       this.$refs.editFormRef.resetFields();
-      this.editStuID = ''
+      this.editStuID = "";
     },
   },
 };

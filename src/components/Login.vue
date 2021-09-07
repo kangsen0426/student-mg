@@ -46,25 +46,26 @@ export default {
   data() {
     return {
       LoginForm: {
-        username: "admin",
-        password: "123456",
+        username: "ks",
+        password: "ks123",
+        method:'login'
       },
       LoginFormRules: {
         username: [
           { required: true, message: "请输入用户名称", trigger: "blur" },
           {
-            min: 3,
+            min: 2,
             max: 10,
-            message: "长度在 3 到 10 个字符",
+            message: "长度在 2 到 10 个字符",
             trigger: "blur",
           },
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           {
-            min: 6,
+            min: 3,
             max: 18,
-            message: "长度在 6 到 18 个字符",
+            message: "长度在 3 到 18 个字符",
             trigger: "blur",
           },
         ],
@@ -81,14 +82,17 @@ export default {
         //表单验证未通过
         if (!valid) return;
 
-        this.$router.push("/home");
-
-       return this.$message.success("登入成功！");
-
         //登入请求
         LoginRequest(this.LoginForm).then((res) => {
+
+          // console.log(res);
           // Code
-          console.log(res);
+          if(res.data.meta.StatusCode === 200){
+             this.$router.push("/home");
+             return this.$message.success("登入成功！");
+          }else{
+            return this.$message.error('登入失败！')
+          }
         });
       });
     },

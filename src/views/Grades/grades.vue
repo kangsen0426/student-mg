@@ -143,7 +143,9 @@ export default {
   methods: {
     async getGrades() {
       //获取成绩列表
-      const res = await getStuGrades();
+      const res = await getStuGrades({method:'getAll'});
+
+      console.log(res);
     },
     removeGradesById(id) {
       //根据id 删除学生
